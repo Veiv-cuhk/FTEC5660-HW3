@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="770" viewBox="0 0 1180 770" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8c959f"/>
+    </marker>
+    <style>
+      .band { fill:#57606a; font-size:11px; letter-spacing:1.4px; font-weight:600; }
+      .ttl  { fill:#1f2328; font-size:13.5px; font-weight:600; }
+      .txt  { fill:#3d444d; font-size:12px; }
+      .mono { fill:#3d444d; font-size:11.5px; font-family:Consolas, Menlo, monospace; }
+      .box  { stroke-width:1.2; }
+    </style>
+  </defs>
+
+  <rect width="1180" height="770" fill="#ffffff"/>
+
+  <!-- ============ BAND 1: PLAN ============ -->
+  <text class="band" x="40" y="34">1 · PLAN</text>
+  <rect class="box" x="40" y="44" width="1100" height="54" rx="7" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text class="ttl" x="58" y="66">Deterministic planner — the interview budget is decided by a table, not by the model</text>
+  <text class="txt" x="58" y="86">point → evidence source · topic → the only two roles who can answer (anyone else only says “I can’t comment” and still burns one of the 10 interviews)</text>
+
+  <!-- ============ BAND 2: COLLECT ============ -->
+  <text class="band" x="40" y="132">2 · COLLECT (tools, parallel)</text>
+  <line x1="210" y1="98"  x2="210" y2="144"  stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="580" y1="98"  x2="580" y2="144"  stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="960" y1="98"  x2="960" y2="144"  stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="40" y="144" width="340" height="76" rx="7" fill="#ffffff" stroke="#8c959f"/>
+  <text class="ttl" x="56" y="166">Point 1 · market potential</text>
+  <text class="mono" x="56" y="188">sql_query ×3</text>
+  <text class="txt"  x="56" y="207">orders → revenue FY2023 / FY2025 · company · industry_medians</text>
+
+  <rect class="box" x="410" y="144" width="340" height="76" rx="7" fill="#ffffff" stroke="#8c959f"/>
+  <text class="ttl" x="426" y="166">Point 5 · worthwhile margin</text>
+  <text class="mono" x="426" y="188">sql_query ×3</text>
+  <text class="txt"  x="426" y="207">monthly_costs FY2025 + TTM · medians</text>
+
+  <rect class="box" x="780" y="144" width="360" height="76" rx="7" fill="#ffffff" stroke="#8c959f"/>
+  <text class="ttl" x="796" y="166">Point 11 · competitive edge</text>
+  <text class="mono" x="796" y="188">interview(competitor) · interview(customer)</text>
+  <text class="txt"  x="796" y="207">both on topic “competitive_edge” — 2 of the 10 interviews</text>
+
+  <!-- ============ BAND 3: COMPUTE / INTERPRET ============ -->
+  <text class="band" x="40" y="244">3 · COMPUTE / INTERPRET</text>
+  <line x1="210" y1="220" x2="210" y2="256" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="580" y1="220" x2="580" y2="256" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="960" y1="220" x2="960" y2="256" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="40" y="256" width="340" height="76" rx="7" fill="#eaf6ec" stroke="#4c9a5c"/>
+  <text class="ttl" x="56" y="278">Python — no model arithmetic</text>
+  <text class="mono" x="56" y="300">growth = (FY2025 ÷ FY2023 − 1) × 100</text>
+  <text class="txt"  x="56" y="319">figures parsed from the tool’s table, near-line flag at ±0.3 pp</text>
+
+  <rect class="box" x="410" y="256" width="340" height="76" rx="7" fill="#eaf6ec" stroke="#4c9a5c"/>
+  <text class="ttl" x="426" y="278">Python — no model arithmetic</text>
+  <text class="mono" x="426" y="300">margin = (rev − CoS − S&amp;A − R&amp;D) ÷ rev</text>
+  <text class="txt"  x="426" y="319">FY2025 headline figure, TTM margin as a consistency check</text>
+
+  <rect class="box" x="780" y="256" width="360" height="76" rx="7" fill="#e8f1fd" stroke="#0969da"/>
+  <text class="ttl" x="796" y="278">LLM call 1 — scuttlebutt judge</text>
+  <text class="mono" x="796" y="300">quotes → JSON {verdict, decisive_quote, reason}</text>
+  <text class="txt"  x="796" y="319">“cannot comment” answers ignored; keyword backstop on failure</text>
+
+  <!-- ============ BAND 4: DECIDE ============ -->
+  <text class="band" x="40" y="360">4 · DECIDE (rules fixed in advance)</text>
+  <line x1="210" y1="332" x2="210" y2="372" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="580" y1="332" x2="580" y2="372" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="960" y1="332" x2="960" y2="372" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="40" y="372" width="340" height="60" rx="7" fill="#ffffff" stroke="#1a7f37" stroke-width="1.6"/>
+  <text class="ttl" x="56" y="394">Rule 1 → PASS / FAIL</text>
+  <text class="txt"  x="56" y="415">PASS if 2-year growth ≥ the industry median</text>
+
+  <rect class="box" x="410" y="372" width="340" height="60" rx="7" fill="#ffffff" stroke="#1a7f37" stroke-width="1.6"/>
+  <text class="ttl" x="426" y="394">Rule 5 → PASS / FAIL</text>
+  <text class="txt"  x="426" y="415">PASS if FY2025 operating margin ≥ the industry median</text>
+
+  <rect class="box" x="780" y="372" width="360" height="60" rx="7" fill="#ffffff" stroke="#1a7f37" stroke-width="1.6"/>
+  <text class="ttl" x="796" y="394">Rule 11 → PASS / FAIL</text>
+  <text class="txt"  x="796" y="415">PASS if a durable, hard-to-copy edge is described</text>
+
+  <!-- ============ BAND 5: AUDIT + REFLECT ============ -->
+  <text class="band" x="40" y="470">5 · AUDIT THE MANAGEMENT CLAIMS, THEN REFLECT AND WRITE</text>
+  <line x1="210" y1="432" x2="500" y2="482" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="580" y1="432" x2="640" y2="482" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="960" y1="432" x2="860" y2="482" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="40" y="480" width="350" height="86" rx="7" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text class="ttl" x="56" y="502">Documents = claims, not evidence</text>
+  <text class="mono" x="56" y="524">list_documents → read_document(letter)</text>
+  <text class="txt"  x="56" y="543">“margin among the best”, “never cut R&amp;D”:</text>
+  <text class="txt"  x="56" y="560">audited against the accounts, never a verdict</text>
+  <line x1="390" y1="523" x2="430" y2="523" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="430" y="480" width="710" height="86" rx="7" fill="#e8f1fd" stroke="#0969da"/>
+  <text class="ttl" x="446" y="502">LLM call 2 — reflection &amp; writer</text>
+  <text class="mono" x="446" y="524">fact sheet (numbers, median, quote, three verdicts) + letter → 2–4 sentences</text>
+  <text class="txt"  x="446" y="543">forbidden to recompute figures or to overturn a verdict; asked to name the interviewee and to flag</text>
+  <text class="txt"  x="446" y="560">any management claim the accounts contradict</text>
+
+  <!-- ============ BAND 6: OUTPUT ============ -->
+  <text class="band" x="40" y="606">6 · ASSEMBLE</text>
+  <line x1="580" y1="566" x2="580" y2="614" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect class="box" x="40" y="614" width="700" height="58" rx="7" fill="#eaf6ec" stroke="#4c9a5c"/>
+  <text class="ttl" x="56" y="636">Python assembler — verdicts are pinned by the rules</text>
+  <text class="txt"  x="56" y="657">per-company try/except (one API failure cannot kill the run) · 6 companies analysed in parallel</text>
+  <line x1="740" y1="643" x2="784" y2="643" stroke="#8c959f" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect class="box" x="784" y="614" width="356" height="58" rx="7" fill="#ffffff" stroke="#1f2328"/>
+  <text class="ttl" x="800" y="636">results.csv</text>
+  <text class="txt"  x="800" y="657">company · points · points correct · interviews used · summary</text>
+
+  <!-- ============ LEGEND ============ -->
+  <line x1="40" y1="700" x2="1140" y2="700" stroke="#d8dee4" stroke-width="1"/>
+  <rect x="40" y="716" width="13" height="13" rx="3" fill="#f6f8fa" stroke="#8c959f"/>
+  <text class="txt" x="60" y="727">tool call (data only through the four tools)</text>
+  <rect x="330" y="716" width="13" height="13" rx="3" fill="#eaf6ec" stroke="#4c9a5c"/>
+  <text class="txt" x="350" y="727">deterministic Python: all arithmetic and all rules</text>
+  <rect x="660" y="716" width="13" height="13" rx="3" fill="#e8f1fd" stroke="#0969da"/>
+  <text class="txt" x="680" y="727">deepseek-v4-flash call (2 per company, 6 companies at a time)</text>
+  <text class="txt" x="40" y="752">Same pipeline for every company — no folder name, company name or public answer is ever read by the agent.</text>
+</svg>

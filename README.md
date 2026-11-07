@@ -171,13 +171,107 @@ companies with the same tools and the same answer key rules, but different
 names and wording, and scores your 3 points only.
 
 ## Homework 3 solution:
-> to students: this is your report, see the homework description.
+
+Author: Veiv-cuhk · Code: `hw3.py` (`CHOSEN_POINTS = [1, 5, 11]`) · Runs:
+`python3 hw3.py --data-folder public_test`
 
 ### My 3 points and rules
-> for each point: why you chose it, your PASS rule in one or two sentences, and the evidence it uses. Quote Fisher where it helps.
+
+I chose one point per evidence source the homework gives me — database,
+interviews, and documents-as-claims — so that the agent has to route, not just
+query one table. All three rules are fixed *before* the agent runs, so the
+model never decides where the PASS/FAIL line is.
+
+**Point 1 — market potential for sales growth (database).** Fisher asks whether
+the company has "products or services with sufficient market potential to make
+possible a sizable increase in sales for at least several years". I picked this
+point because Fisher calls market potential the first thing to look for, and
+the database holds exactly the quantity that answers it.
+
+> **PASS rule:** two-year revenue growth, FY2025 revenue ÷ FY2023 revenue − 1
+> (revenue = `SUM(amount)` in `orders`), is **at least** the industry median
+> `revenue_growth_2y_pct` for the company's own industry. Evidence: three
+> `sql_query` calls (revenue by year, `company`, `industry_medians`).
+
+**Point 5 — worthwhile profit margin (database).** Fisher: "if profit margins
+do not stand out from those of competitors, a company is not likely to be an
+outstanding investment". "Worthwhile" has to mean something comparable, so I
+benchmark against the industry rather than against a fixed percentage or the
+company's own past: the same margin can be excellent in food ingredients and
+poor in medical devices.
+
+> **PASS rule:** FY2025 operating margin, (revenue − cost of sales − selling
+> and admin − R&D) ÷ revenue, is **at least** the industry median
+> `operating_margin_pct`. Evidence: `sql_query` on `monthly_costs` (FY2025),
+> `orders` and `industry_medians`. A trailing-twelve-month margin is computed
+> as a consistency check and quoted in the summary.
+
+**Point 11 — competitive edge peculiar to the industry (interviews).** Fisher's
+point 11 asks for "other aspects of the business… which will give the investor
+important clues as to how outstanding the company may be in relation to its
+competition" — his argument that a worthwhile margin is only safe if something
+defends it. This cannot be read off a table; it lives in what customers and
+competitors say, which is exactly Fisher's "scuttlebutt".
+
+> **PASS rule:** independent interviewees describe a durable advantage a rival
+> cannot copy quickly (switching costs, proprietary know-how, installed base,
+> performance leadership, customers who tried a rival and came back). FAIL if
+> the product is described as a commodity bought on price. Evidence: exactly
+> two interviews — `interview("competitor", "competitive_edge")` and
+> `interview("customer", "competitive_edge")` — because Section 3.3 says only
+> those two roles know the topic, and anyone else's "I can't comment" still
+> costs one of the 10 interviews.
+
+The documents are never evidence for a verdict. The 2025 letter to
+shareholders is read for every company and used the way the homework suggests
+management claims should be used: audited against the accounts, with any
+contradiction reported in the summary. (For example, Hollins' letter claims a
+59.4% gross margin "among the best in our industry" — the database gives
+59.4% to the decimal, and its planned USD 238.0m of 2026–28 capex matches
+`capex_plan` exactly.)
 
 ### Design
-> a visualization of your agent design and one paragraph describing it.
+
+![Agent design](docs/agent_design.png)
+
+The agent is a fixed five-stage pipeline that runs once per company (20
+companies, six at a time, about 50 seconds for the whole public set). A
+**deterministic planner** routes each point to its source and fixes the
+interview plan from the topic→role table, so the 10-interview budget can never
+be wasted on someone who "cannot comment" — delegating that to the model would
+add a failure mode without adding information. The **collect** stage pulls
+facts only through the four LangChain tools (`sql_query`, `interview`,
+`list_documents`, `read_document`). The **compute** stage does every sum,
+ratio and comparison in Python — the homework's tip that model arithmetic
+causes wrong verdicts is taken literally, so `deepseek-v4-flash` (two calls
+per company) is only asked to *judge* and to *write*: call 1 is the
+scuttlebutt judge, which turns the two interview quotes into
+`{"verdict", "decisive_quote", "reason"}` JSON under the point-11 rule (with a
+keyword backstop and retries if the call fails); call 2 is a
+reflection-and-writer step that receives a fact sheet of already-computed
+numbers plus the shareholder letter, is forbidden to recompute figures or
+overturn a verdict, and produces the 2–4 sentence summary while flagging any
+management claim the accounts contradict. Finally the **assembler** pins the
+verdicts (rules, not prose), wraps each company in its own try/except so one
+API failure cannot crash the run, and writes the `results.csv` row. Nothing
+company-specific is hard-coded: folder names, industries and answers all come
+from the tools at run time.
 
 ### Results
-> your point score on `public_test`, the companies where your verdicts disagree with the public answers, and why.
+
+On `public_test` (20 companies) the agent scores **60/60 verdicts correct —
+balanced point accuracy 100%** on points 1, 5 and 11, using 2 of the 10
+interviews per company. The run was repeated three times end-to-end (the
+grading protocol) and scored 100% each time, with identical verdicts.
+
+Companies where my verdicts disagree with the public answers: **none**. The
+public data never puts a company near the rule lines, which matches the
+homework's description of the answer key: growth sits either clearly above or
+clearly below the industry median (e.g. 27.9% vs 20.1% for
+`copperfield_technologies`, 8.0% vs 11.5% for `cobalt_holdings`), and the
+margin gaps are of the same size. The only place discretion is left to the
+model is the point-11 reading of the interview quotes, and there the public
+interviews are deliberately unambiguous ("nothing they make is hard to copy;
+it is a price fight" against "their installed base and know-how are hard to
+copy; we have tried for years"). `results.csv` in this repo is the output of
+the last full run.

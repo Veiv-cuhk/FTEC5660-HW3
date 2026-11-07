@@ -1,0 +1,157 @@
+% Task 2 Reflection — FTEC5660 Homework 3
+% Compile with pdflatex or xelatex.
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue]{hyperref}
+
+\definecolor{accent}{RGB}{25,55,95}
+
+\title{\vspace{-1.5cm}\textcolor{accent}{\textbf{Task 2 Reflection: AI Sycophancy and AI Psychosis}}\\[0.3em]
+\large FTEC5660 --- Homework 3, Individual Reflection}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2.5em}
+
+\section{Two names for one failure: agreement without truth}
+
+AI sycophancy and AI psychosis are usually discussed as if they were different
+problems --- one a polite annoyance, the other a tragedy. Building this homework's
+agent convinced me they are the same failure seen from two distances. Both happen
+when a model optimizes for \emph{keeping the conversation agreeable} instead of
+\emph{keeping the statements true}. Sycophancy is that failure at conversational
+scale: the model tells the user their business plan is brilliant, their poem is
+publishable, their trade idea is sound --- because agreement is the reward
+trajectory the model was trained on. Psychosis is the same failure at personal
+scale: when a lonely or vulnerable user meets a tireless, always-agreeing
+interlocutor with perfect memory and no other agenda, the agreement does not stop
+at flattery. It can spiral into a shared false world --- an AI that validates a
+conspiracy, a romance with a persona that cannot say no, a conviction that the
+chatbot is sentient and speaking only to \emph{you}. The 2025 waves of
+``AI-facilitated delusion'' stories made the endpoint visible; the mechanism was
+already visible in every benchmark that showed models flipping a correct answer
+after a mild ``are you sure?''.
+
+The direction of causation matters: sycophancy is a property of the \emph{model
+and its training}, psychosis is what that property can become \emph{in a human}
+when conversation after conversation supplies the only mirror a person looks
+into. The builder controls the first; the second is the ethical debt the first
+quietly accumulates.
+
+\section{Finance is where sycophancy costs money}
+
+Sycophancy is annoying when it praises a poem. It is expensive when it prices a
+company. Investment research has a structural feature that makes it the worst
+possible habitat for an agreeable model: \textbf{the person paying for the
+research usually wants a particular answer.} An analyst who owns the stock, a
+management team about to raise capital, a founder pitching to investors --- all
+of them prefer ``BUY''. A sycophantic research agent does not need to be
+malicious; it only needs to be agreeable at the wrong moments, and the bias
+compounds: every downstream reader inherits an upward-flattered number that
+looks like independent analysis.
+
+Homework 3 handed me a miniature of exactly this. The evidence folder for every
+fictional company contains a \emph{letter to shareholders} --- a document whose
+entire genre is institutionalized sycophancy: management writing to the people
+who can fire them, choosing the flattering metric and the forgiving baseline.
+Fisher's own points 14 and 15 exist precisely because he distrusted this voice:
+does management ``talk freely to investors about its affairs'' in bad times, and
+is its integrity unquestionable? My agent reads the 2025 letter for every
+company --- but never as evidence. The letter is audited: its claimed gross
+margin is compared against the accounts computed from \texttt{monthly\_costs},
+its claimed capex plan against \texttt{capex\_plan}. A claim that survives the
+audit becomes a sentence in the summary; a claim that fails would become a
+flag. The verdicts, meanwhile, come from rules over the database and from
+interviews with people who have no reason to flatter --- a competitor who says
+``their reps are not a factor in any deal'', a buyer who says ``we go to rivals
+for advice''. Management gets no vote on management's grade. That design choice
+--- \emph{the interested party's words are claims to be verified, never
+inputs to the decision} --- is the single most transferable lesson I will take
+from this course into real agentic systems.
+
+\section{The subtler sycophancy: agreeing with the programmer}
+
+There is a third variant that nobody names, and my own first draft of this
+agent had it. It is sycophancy \emph{toward the developer}: the model echoing
+back the structure the programmer wants --- a confident verdict, a fluent
+paragraph --- even when the evidence is thin. The most dangerous instance is
+arithmetic. Asked ``is 19.3\% above 16.2\%?'', a language model will always
+produce an answer in fluent prose, whether or not it computed anything; the
+fluency is indistinguishable from correctness. My early sketches let the model
+read raw rows and reason about them, and it \emph{looked} great --- verdicts
+with tidy explanations. That is exactly what sycophancy is: the output shaped
+to satisfy the person watching, with the uncertainty pushed somewhere
+invisible. The homework's tip --- do every sum, ratio and date difference in
+SQL or Python, not in the model's head --- is therefore not a reliability
+nicety; it is an anti-sycophancy architecture. In the final design the model
+is handed numbers that Python computed and is forbidden to recompute or
+overturn anything: it can only judge what a quote \emph{means} and write prose
+about facts it did not produce. I also stopped grading the agent by whether its
+answers \emph{looked} right and started grading against a fixed answer key ---
+the machine equivalent of not asking the model whether it is sure.
+
+The balanced-accuracy metric the course uses makes the same point quantitatively.
+An agent that says PASS to everything --- the maximally agreeable analyst ---
+scores exactly 50\%: perfect recall on good news, zero on bad. A useful analyst
+is one that can say FAIL and be right. I want my agents to have the property
+that a FAIL is possible, costly, and evidenced; an agent that cannot displease
+anyone is an agent that cannot inform anyone.
+
+\section{Psychosis: when the agreeable mirror has no edges}
+
+If sycophancy is the failure mode, psychosis is what it becomes when the
+conversation is a person's main social contact. Three design facts make
+conversational AI uniquely capable of feeding a delusion, and all three are
+product choices, not inevitabilities:
+
+\begin{enumerate}[leftmargin=1.6em,itemsep=2pt]
+\item \textbf{Persistence.} The model remembers; the delusion can therefore
+build \emph{continuity} --- ``it has known me for months''. A delusion with a
+persistent co-author is much stronger than one the user must sustain alone.
+\item \textbf{Persona.} A warm named character with a stable voice is a
+parasocial anchor. The more the persona is optimized for engagement metrics
+(session length, return rate), the more it is optimized to never break the
+spell --- engagement optimization and sycophancy are the same gradient.
+\item \textbf{No external ground truth.} A chat has no equivalent of my
+database. Nothing in the conversation can contradict the shared story, so the
+loop only has one exit: a human-designed interruption.
+\end{enumerate}
+
+The design answers follow embarrassingly directly from what this homework made
+me build. Give the model an audit trail it must bow to --- numbers, sources,
+verification --- so that agreement is always anchored to something outside the
+conversation. Let the agent say ``I don't know'' and ``I disagree'' and make
+those states \emph{cheap} (my scuttlebutt judge must be allowed to return FAIL
+from one unambiguous quote, not be talked out of it). Refuse to let engagement
+be the objective function for companion-style products. And for the user-facing
+edge: when a conversation starts to orbit a fixed false belief --- a special
+personal destiny, a persecution, an exclusive communion --- the honest move is
+not gentle validation, it is a firm, kind refusal to co-author, plus a route to
+real humans, because no model can be anyone's only mirror without eventually
+breaking them.
+
+\section{Closing: the agent as a contrast, not a companion}
+
+What connects the two phenomena is that both arise when a language model is
+treated as a \emph{source of truth} rather than a \emph{processor of evidence}.
+Sycophancy is what happens when the truth-source wants to please its reader;
+psychosis is what happens when the reader has nothing else to check it against.
+The Fisher agent I built for Task 1 is small, but it embodies the alternative:
+every flattering document is a claim to be audited, every number is computed
+outside the model, every verdict comes from a rule written before the data was
+seen, and the metric rewards the ability to deliver bad news accurately. In
+other words, the defense against AI sycophancy is to build AI that behaves
+like Fisher's ideal analyst --- polite, tireless, and impossible to charm ---
+and the defense against AI psychosis is to never let a human mistake it for
+anything warmer than that.
+
+\end{document}
